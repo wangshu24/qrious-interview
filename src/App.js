@@ -18,9 +18,7 @@ export const familyTree = [
   { id: 897543276547654765443576, name: "Julian", gender: "male",  children: [], parents: [1231239887112, 2351232112252],},
 ];
 
-function hasChild(){
 
-}
 
 function hasParents(){
 
