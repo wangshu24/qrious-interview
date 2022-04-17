@@ -1,4 +1,4 @@
-import FamilyTree from "./FamilyTree";
+import FamilyTree from "./FamilyTree"
 
 
 export const familyTree = [
@@ -18,19 +18,12 @@ export const familyTree = [
   { id: 897543276547654765443576, name: "Julian", gender: "male",  children: [], parents: [1231239887112, 2351232112252],},
 ];
 
-
-
-function hasParents(){
-
-}
-
 function App() {
-  
   return (
-    <>
-      <h1 >Family Tree</h1>
+    <div>
+      <h1>Family Tree</h1>
       <FamilyTree />
-    </>
+    </div>
   );
 }
 
