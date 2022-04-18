@@ -20,10 +20,10 @@ export const familyTree = [
 
 function App() {
   return (
-    <div>
+    <>
       <h1>Family Tree</h1>
       <FamilyTree />
-    </div>
+    </>
   );
 }
 

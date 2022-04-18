@@ -9,10 +9,10 @@ function treeTraverse(root,familyTree,couples) {
     const historicLeaf = []
     let prevGen = []
     
-    while(historicLeaf.length != familyTree.length){
+    while(historicLeaf.length < familyTree.length){
         if(atRoot){
             root.forEach(person => {
-                treeMap.push(renderLeaf(person,false,true));
+                treeMap.push(renderLeaf(person,false,true,true));
                 historicLeaf.push(person)     
                 prevGen.push(person)
             })
@@ -23,8 +23,19 @@ function treeTraverse(root,familyTree,couples) {
             prevGen = []
             prevGen = nextGen.map(child => {return child})
             nextGen.forEach(person=>{
-                treeMap.push(renderLeaf(person));
-                historicLeaf.push(person)
+                if(person.parents !==""){
+                    if(person.children.toString()!==""){
+                        treeMap.push(renderLeaf(person, true, true,true));
+                        historicLeaf.push(person)
+                    }       
+                    else {
+                        treeMap.push(renderLeaf(person, true, false,false));
+                        historicLeaf.push(person)
+                    } 
+                } 
+                else {
+                        treeMap.push(renderLeaf(person,false,true,true));
+                        historicLeaf.push(person)} 
             })
         } else {
             endOfTree = true;
@@ -58,46 +69,12 @@ function findNextGen(prevGen,familyTree,couples){
     return nextGen;
 }
 
-function groupByGen(familyTree){
-    let atRoot = true
-    let endOfTree = false;
-    const root = isRoot(isPartner(hasChild(familyTree)))
-    const couples = isPartner(hasChild(familyTree))
-    const treeMap = []
-    const historicLeaf = []
-    let prevGen = []
-    
-    while(historicLeaf.length != familyTree.length){
-        if(atRoot){
-            root.forEach(person => {
-                treeMap.push(renderLeaf(person));
-                historicLeaf.push(person)     
-                prevGen.push(person)
-            })
-            atRoot = false;
-        }
-        if(historicLeaf.length != familyTree.length){
-            let nextGen = findNextGen(prevGen,familyTree,couples)
-            prevGen = []
-            prevGen = nextGen.map(child => {return child})
-            nextGen.forEach(person=>{
-                treeMap.push(renderLeaf(person));
-                historicLeaf.push(person)
-            })
-        } else {
-            endOfTree = true;
-        }
-    }
-    return treeMap;
-}
-
-function renderLeaf(person,hasParent,hasPartner) {
+function renderLeaf(person,hasParent,hasPartner,hasChild) {
     return  <div className="person" key={person.id} 
-            style={{backgroundColor: person.gender==='male' ? 'lightblue' : 'pink',
-                    position: hasParent === true? 'absolute' : 'relative',
-                    display: hasPartner===true? 'block' : 'inline-block',
+            style={{backgroundColor: person.gender==='male' ? 'lightblue' : 'pink',         
+                    display: hasPartner==true? 'block' : 'inline-block',
                     padding: '10px',
-                    margin: '5px auto',
+                    margin: hasParent === true? '5px 10px' : '5px auto',
                     width: '150px',
                     height: '50px',
                     textAlign: 'center',
@@ -143,13 +120,7 @@ function isRoot(coupleArray){
 
 export default function FamilyTree() {
     const root = isRoot(isPartner(hasChild(familyTree)))
-    const couples = isPartner(hasChild(familyTree))
-    console.log(couples)
-
-    console.log(findNextGen([familyTree[5],familyTree[10]],familyTree,couples))
-
-    console.log(groupByGen(familyTree))
-    
+    const couples = isPartner(hasChild(familyTree))    
     return (
         <>       
         {treeTraverse(root,familyTree,couples)}
