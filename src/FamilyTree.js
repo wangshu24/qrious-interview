@@ -7,33 +7,29 @@ function treeTraverse(root,familyTree,couples) {
     let endOfTree = false;
     const treeMap = []
     const historicLeaf = []
-    if(atRoot){
-            root.forEach(person => {
-            treeMap.push(renderLeaf(person));
-            historicLeaf.push(person)
-        })
-        atRoot = false
-    } 
+    let prevGen = []
     
-    // while(!endOfTree) {
-    //     let prevGen = []
-    //     if(atRoot){
-    //         root.forEach(person => {
-    //             treeMap.push(renderLeaf(person));
-    //             historicLeaf.push(person)     
-    //             prevGen.push(person)
-    //         })
-    //         atRoot = false;
-    //     }
-    //     if(!endOfTree){
-    //         let nextGen = findNextGen(prevGen,familyTree,couples)
-    //         prevGen = nextGen.map(child => child)
-    //         nextGen.forEach(person=>{
-    //             treeMap.push(renderLeaf(person));
-    //             historicLeaf.push(person)
-    //         })
-    //     }
-    // }
+    while(historicLeaf.length != familyTree.length){
+        if(atRoot){
+            root.forEach(person => {
+                treeMap.push(renderLeaf(person,false,true));
+                historicLeaf.push(person)     
+                prevGen.push(person)
+            })
+            atRoot = false;
+        }
+        if(historicLeaf.length != familyTree.length){
+            let nextGen = findNextGen(prevGen,familyTree,couples)
+            prevGen = []
+            prevGen = nextGen.map(child => {return child})
+            nextGen.forEach(person=>{
+                treeMap.push(renderLeaf(person));
+                historicLeaf.push(person)
+            })
+        } else {
+            endOfTree = true;
+        }
+    } 
     return treeMap;
 }
 
@@ -63,18 +59,48 @@ function findNextGen(prevGen,familyTree,couples){
 }
 
 function groupByGen(familyTree){
+    let atRoot = true
+    let endOfTree = false;
+    const root = isRoot(isPartner(hasChild(familyTree)))
+    const couples = isPartner(hasChild(familyTree))
+    const treeMap = []
+    const historicLeaf = []
+    let prevGen = []
     
+    while(historicLeaf.length != familyTree.length){
+        if(atRoot){
+            root.forEach(person => {
+                treeMap.push(renderLeaf(person));
+                historicLeaf.push(person)     
+                prevGen.push(person)
+            })
+            atRoot = false;
+        }
+        if(historicLeaf.length != familyTree.length){
+            let nextGen = findNextGen(prevGen,familyTree,couples)
+            prevGen = []
+            prevGen = nextGen.map(child => {return child})
+            nextGen.forEach(person=>{
+                treeMap.push(renderLeaf(person));
+                historicLeaf.push(person)
+            })
+        } else {
+            endOfTree = true;
+        }
+    }
+    return treeMap;
 }
 
-function renderLeaf(person,hasParent,hasPartner,style) {
+function renderLeaf(person,hasParent,hasPartner) {
     return  <div className="person" key={person.id} 
             style={{backgroundColor: person.gender==='male' ? 'lightblue' : 'pink',
+                    position: hasParent === true? 'absolute' : 'relative',
+                    display: hasPartner===true? 'block' : 'inline-block',
                     padding: '10px',
-                    margin: '5px 10px',
+                    margin: '5px auto',
                     width: '150px',
                     height: '50px',
                     textAlign: 'center',
-                    display: 'inline-block',
                     horizontalAlign: 'center',
             }}>
                 {person.name}
@@ -122,8 +148,8 @@ export default function FamilyTree() {
 
     console.log(findNextGen([familyTree[5],familyTree[10]],familyTree,couples))
 
-    console.log(familyTree[0].children[2]===familyTree[2].id) //Test ID searching
-
+    console.log(groupByGen(familyTree))
+    
     return (
         <>       
         {treeTraverse(root,familyTree,couples)}
